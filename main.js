@@ -46,16 +46,27 @@ function installPlugin () {
     }
   
     installPath = baseBath + 'CEP/extensions/'
+
     movePlugin(installPath)
 }
   
   function movePlugin (installPath) {
-    fs.writeFileSync(path.join(__dirname, 'drag-and-drop-1.md'), '# First file to test drag and drop')
+    // fs.writeFileSync(path.join(__dirname, 'drag-and-drop-1.md'), '# First file to test drag and drop')
+
+    console.log('---movePlugin-----')
+    console.log(process.env['HOME'])
+
+    let home = process.env['HOME']
+    
+    // 打dmg文件，__dirname 对应的是/Volumes/ai-plugin 1.0.0/ai-plugins.app/Contents/Resources/app.asar。
+    fs.copyFileSync(path.join(__dirname,'../zw/hello.html'), path.join(home,'/Library/Application Support/Adobe/CEP/extensions/hello.html'))
+    
     // fs.chmod(path.resolve(installPath),0o400,function(err){
     //   console.log('err',err)
     //   console.log('aaaaaa',path.resolve(installPath));
     //   fs.writeFileSync('example.txt', "This file has now been edited.");
     // })
+
     // fs.emptyDir(installPath, function (mkdirErr) {
     //     // path exists unless there was an error
     //     console.error('------',mkdirErr)
