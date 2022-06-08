@@ -2,7 +2,7 @@
  * @Author: zhanghouyi zhanghouyi@baoxiaohe.com
  * @Date: 2022-06-06 14:05:15
  * @LastEditors: zhanghouyi zhanghouyi@baoxiaohe.com
- * @LastEditTime: 2022-06-08 17:00:34
+ * @LastEditTime: 2022-06-08 17:11:35
  * @FilePath: /electron-app/electronjs/main.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -11,7 +11,7 @@ const path = require('path');
 const fs=require('fs');
 
 let win;
-const appName = './zw';
+const appName = '/zw';
 
 function createWindow() {
     // Create the browser window.
@@ -58,9 +58,7 @@ function installPlugin () {
 
     let home = process.env['HOME'];
     console.log('path.join(__dirname, appName)',path.join(__dirname, appName))
-    _copyDir(path.join(__dirname, appName),installPath,function(){
-        console.log(1)
-    })
+    checkDirectory(path.join(__dirname, appName),installPath,copy)
     // 打dmg文件，__dirname 对应的是/Volumes/ai-plugin 1.0.0/ai-plugins.app/Contents/Resources/app.asar。
     // fs.copyFileSync(path.join(__dirname,'../zw'), path.join(home,'/Library/Application Support/Adobe/CEP/extensions/'))
     
@@ -97,42 +95,73 @@ app.on("activate", () => {
     }
 });
 
-function _copyDir(src, dist, callback) {
-    fs.access(dist, function(err){
-      if(err){
-        // 目录不存在时创建目录
-        fs.mkdirSync(dist);
-      }
-      _copy(null, src, dist);
-    });
+// function _copyDir(src, dist, callback) {
+//     fs.access(dist, function(err){
+//       if(err){
+//         // 目录不存在时创建目录
+//         fs.mkdirSync(dist);
+//       }
+//       _copy(null, src, dist);
+//     });
   
-    function _copy(err, src, dist) {
-      if(err){
-        callback(err);
-      } else {
-        fs.readdir(src, function(err, paths) {
-          if(err){
-            callback(err)
-          } else {
-            paths.forEach(function(path) {
-              var _src = src + '/' +path;
-              var _dist = dist + '/' +path;
-              fs.stat(_src, function(err, stat) {
-                if(err){
-                  callback(err);
-                } else {
-                  // 判断是文件还是目录
-                  if(stat.isFile()) {
-                    fs.writeFileSync(_dist, fs.readFileSync(_src));
-                  } else if(stat.isDirectory()) {
-                    // 当是目录是，递归复制
-                    _copyDir(_src, _dist, callback)
-                  }
-                }
-              })
-            })
-          }
-        })
-      }
-    }
-  }
+//     function _copy(err, src, dist) {
+//       if(err){
+//         callback(err);
+//       } else {
+//         fs.readdir(src, function(err, paths) {
+//           if(err){
+//             callback(err)
+//           } else {
+//             paths.forEach(function(path) {
+//               var _src = src + '/' +path;
+//               var _dist = dist + '/' +path;
+//               fs.stat(_src, function(err, stat) {
+//                 if(err){
+//                   callback(err);
+//                 } else {
+//                   // 判断是文件还是目录
+//                   if(stat.isFile()) {
+//                     fs.writeFileSync(_dist, fs.readFileSync(_src));
+//                   } else if(stat.isDirectory()) {
+//                     // 当是目录是，递归复制
+//                     _copyDir(_src, _dist, callback)
+//                   }
+//                 }
+//               })
+//             })
+//           }
+//         })
+//       }
+//     }
+//   }
+
+
+var copy=function(src,dst){
+    let paths = fs.readdirSync(src); //同步读取当前目录
+    paths.forEach(function(path){
+        var _src=src+'/'+path;
+        var _dst=dst+'/'+path;
+        fs.stat(_src,function(err,stats){  //stats  该对象 包含文件属性
+            if(err)throw err;
+            if(stats.isFile()){ //如果是个文件则拷贝 
+                let  readable=fs.createReadStream(_src);//创建读取流
+                let  writable=fs.createWriteStream(_dst);//创建写入流
+                readable.pipe(writable);
+            }else if(stats.isDirectory()){ //是目录则 递归 
+                checkDirectory(_src,_dst,copy);
+            }
+        });
+    });
+}
+var checkDirectory=function(src,dst,callback){
+    fs.access(dst, fs.constants.F_OK, (err) => {
+        if(err){
+            fs.mkdirSync(dst);
+            callback(src,dst);
+        }else{
+            callback(src,dst);
+        }
+      });
+};
+
+ 
