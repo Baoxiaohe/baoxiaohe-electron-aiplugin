@@ -2,16 +2,16 @@
  * @Author: zhanghouyi zhanghouyi@baoxiaohe.com
  * @Date: 2022-06-06 14:05:15
  * @LastEditors: zhanghouyi zhanghouyi@baoxiaohe.com
- * @LastEditTime: 2022-06-08 16:23:10
+ * @LastEditTime: 2022-06-08 16:46:59
  * @FilePath: /electron-app/electronjs/main.js
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 const { app, BrowserWindow } = require("electron");
 const path = require('path');
-const fs=require('fs-extra');
+const fs=require('fs');
 
 let win;
-const appName = '../zw';
+const appName = './zw';
 
 function createWindow() {
     // Create the browser window.
@@ -56,8 +56,11 @@ function installPlugin () {
     console.log('---movePlugin-----')
     console.log(process.env['HOME'])
 
-    let home = process.env['HOME']
-    
+    let home = process.env['HOME'];
+    console.log('path.join(__dirname, appName)',path.join(__dirname, appName))
+    _copyDir(path.join(__dirname, appName),installPath,function(){
+        console.log(1)
+    })
     // 打dmg文件，__dirname 对应的是/Volumes/ai-plugin 1.0.0/ai-plugins.app/Contents/Resources/app.asar。
     // fs.copyFileSync(path.join(__dirname,'../zw'), path.join(home,'/Library/Application Support/Adobe/CEP/extensions/'))
     
@@ -67,18 +70,18 @@ function installPlugin () {
     //   fs.writeFileSync('example.txt', "This file has now been edited.");
     // })
 
-    fs.emptyDir(installPath, function (mkdirErr) {
-        // path exists unless there was an error
-        console.error('------',mkdirErr)
-        fs.copy(path.join(__dirname, appName), path.resolve(installPath), function (err) {
-          let message = 'loaded'
-          if (err) {
-            console.error('011111',err)
-            message = err
-          }
-          win.webContents.send('status', message)
-        })
-    })
+    // fs.emptyDir(installPath, function (mkdirErr) {
+    //     // path exists unless there was an error
+    //     console.error('------',mkdirErr)
+    //     fs.copy(path.join(__dirname, appName), path.resolve(installPath), function (err) {
+    //       let message = 'loaded'
+    //       if (err) {
+    //         console.error('011111',err)
+    //         message = err
+    //       }
+    //       win.webContents.send('status', message)
+    //     })
+    // })
   }
 app.whenReady().then(createWindow);
 
@@ -93,3 +96,43 @@ app.on("activate", () => {
         createWindow();
     }
 });
+
+function _copyDir(src, dist, callback) {
+    fs.access(dist, function(err){
+      if(err){
+        // 目录不存在时创建目录
+        fs.mkdirSync(dist);
+      }
+      _copy(null, src, dist);
+    });
+  
+    function _copy(err, src, dist) {
+      if(err){
+        callback(err);
+      } else {
+        fs.readdir(src, function(err, paths) {
+          if(err){
+            callback(err)
+          } else {
+            paths.forEach(function(path) {
+              var _src = src + '/' +path;
+              var _dist = dist + '/' +path;
+              fs.stat(_src, function(err, stat) {
+                if(err){
+                  callback(err);
+                } else {
+                  // 判断是文件还是目录
+                  if(stat.isFile()) {
+                    fs.writeFileSync(_dist, fs.readFileSync(_src));
+                  } else if(stat.isDirectory()) {
+                    // 当是目录是，递归复制
+                    copyDir(_src, _dist, callback)
+                  }
+                }
+              })
+            })
+          }
+        })
+      }
+    }
+  }
