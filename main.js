@@ -42,16 +42,14 @@ function installPlugin () {
     movePlugin(installPath)
 }
   
-  function movePlugin (installPath) {
-      /**方式一 直接打包 当前目录进行拷贝 */
-      /**进行拷贝 */
+function movePlugin (installPath) {
+    /**方式一 直接打包 当前目录进行拷贝 */
     _copyDir(path.join(__dirname, appName),installPath,()=>{
         console.log('拷贝成功')
     })
-
     /**方式二 在远程进行下载 拷贝 */
     //downZip('https://test.yun.baoxiaohe.com/ai//staticx7gj3y9q.zip')
-  }
+}
 
   /**准备 */
 app.whenReady().then(createWindow);
@@ -137,7 +135,7 @@ function _copyDir(src, dist, callback) {
         })
       }
     }
-  }
+}
 
 
  
