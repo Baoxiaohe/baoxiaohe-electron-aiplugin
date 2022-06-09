@@ -1,20 +1,12 @@
-/*
- * @Author: zhanghouyi zhanghouyi@baoxiaohe.com
- * @Date: 2022-06-06 14:05:15
- * @LastEditors: zhanghouyi zhanghouyi@baoxiaohe.com
- * @LastEditTime: 2022-06-08 17:11:35
- * @FilePath: /electron-app/electronjs/main.js
- * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
- */
 const { app, BrowserWindow } = require("electron");
-const path = require('path');
-const fs=require('fs');
-
+const path = require('path'); //加载路径模块
+const fs=require('fs');//加载node fs系统模块
+// const adm_zip = require('adm-zip');
 let win;
 const appName = '/zw';
 
 function createWindow() {
-    // Create the browser window.
+    //创建当前窗口
     win = new BrowserWindow({
         width: 800,
         height: 600,
@@ -22,12 +14,11 @@ function createWindow() {
             nodeIntegration: true,
         },
     });
-
-    // and load the index.html of the app.
+    //加载资源
     win.loadFile("index.html");
+    /**开启调试工具 */
     win.webContents.openDevTools();
-    // Open the DevTools.
-    // win.webContents.openDevTools();
+    /**执行 目录复制操作 */
     win.webContents.on('did-finish-load', installPlugin);
     win.on('closed', function () {
         win = null
@@ -37,6 +28,7 @@ function installPlugin () {
     let baseBath
     let installPath
   
+    //加载 目标目录
     if (process.platform === 'darwin') {
       // 测试不能加载插件
       baseBath = process.env['HOME'] + '/Library/Application Support/Adobe/'
@@ -51,36 +43,17 @@ function installPlugin () {
 }
   
   function movePlugin (installPath) {
-    // fs.writeFileSync(path.join(__dirname, 'drag-and-drop-1.md'), '# First file to test drag and drop')
+      /**方式一 直接打包 当前目录进行拷贝 */
+      /**进行拷贝 */
+    _copyDir(path.join(__dirname, appName),installPath,()=>{
+        console.log('拷贝成功')
+    })
 
-    console.log('---movePlugin-----')
-    console.log(process.env['HOME'])
-
-    let home = process.env['HOME'];
-    console.log('path.join(__dirname, appName)',path.join(__dirname, appName))
-    checkDirectory(path.join(__dirname, appName),installPath,copy)
-    // 打dmg文件，__dirname 对应的是/Volumes/ai-plugin 1.0.0/ai-plugins.app/Contents/Resources/app.asar。
-    // fs.copyFileSync(path.join(__dirname,'../zw'), path.join(home,'/Library/Application Support/Adobe/CEP/extensions/'))
-    
-    // fs.chmod(path.resolve(installPath),0o400,function(err){
-    //   console.log('err',err)
-    //   console.log('aaaaaa',path.resolve(installPath));
-    //   fs.writeFileSync('example.txt', "This file has now been edited.");
-    // })
-
-    // fs.emptyDir(installPath, function (mkdirErr) {
-    //     // path exists unless there was an error
-    //     console.error('------',mkdirErr)
-    //     fs.copy(path.join(__dirname, appName), path.resolve(installPath), function (err) {
-    //       let message = 'loaded'
-    //       if (err) {
-    //         console.error('011111',err)
-    //         message = err
-    //       }
-    //       win.webContents.send('status', message)
-    //     })
-    // })
+    /**方式二 在远程进行下载 拷贝 */
+    //downZip('https://test.yun.baoxiaohe.com/ai//staticx7gj3y9q.zip')
   }
+
+  /**准备 */
 app.whenReady().then(createWindow);
 
 app.on("window-all-closed", () => {
@@ -94,74 +67,77 @@ app.on("activate", () => {
         createWindow();
     }
 });
+/**远程下载 */
+function downZip(url){
+    win.webContents.downloadURL(url);
+    win.webContents.session.once('will-download', (event, item, webContents) => {
+    //设置保存路径
+    const filePath = path.join(installPath, `bxh-ai-plugin.zip`);
 
-// function _copyDir(src, dist, callback) {
-//     fs.access(dist, function(err){
-//       if(err){
-//         // 目录不存在时创建目录
-//         fs.mkdirSync(dist);
-//       }
-//       _copy(null, src, dist);
-//     });
-  
-//     function _copy(err, src, dist) {
-//       if(err){
-//         callback(err);
-//       } else {
-//         fs.readdir(src, function(err, paths) {
-//           if(err){
-//             callback(err)
-//           } else {
-//             paths.forEach(function(path) {
-//               var _src = src + '/' +path;
-//               var _dist = dist + '/' +path;
-//               fs.stat(_src, function(err, stat) {
-//                 if(err){
-//                   callback(err);
-//                 } else {
-//                   // 判断是文件还是目录
-//                   if(stat.isFile()) {
-//                     fs.writeFileSync(_dist, fs.readFileSync(_src));
-//                   } else if(stat.isDirectory()) {
-//                     // 当是目录是，递归复制
-//                     _copyDir(_src, _dist, callback)
-//                   }
-//                 }
-//               })
-//             })
-//           }
-//         })
-//       }
-//     }
-//   }
-
-
-var copy=function(src,dst){
-    let paths = fs.readdirSync(src); //同步读取当前目录
-    paths.forEach(function(path){
-        var _src=src+'/'+path;
-        var _dst=dst+'/'+path;
-        fs.stat(_src,function(err,stats){  //stats  该对象 包含文件属性
-            if(err)throw err;
-            if(stats.isFile()){ //如果是个文件则拷贝 
-                let  readable=fs.createReadStream(_src);//创建读取流
-                let  writable=fs.createWriteStream(_dst);//创建写入流
-                readable.pipe(writable);
-            }else if(stats.isDirectory()){ //是目录则 递归 
-                checkDirectory(_src,_dst,copy);
-            }
-        });
-    });
+    item.setSavePath(filePath);
+    // item.on('updated', (event, state) => {
+    //   if (state === 'interrupted') {
+    //     console.log('下载中断，可以继续');
+    //   } else if (state === 'progressing') {
+    //     if (item.isPaused()) {
+    //       console.log('下载暂停');
+    //     } else {
+    //       console.log(`当前下载项目的接收字节${item.getReceivedBytes()}`);
+    //       console.log(`下载完成百分比：${item.getReceivedBytes() / item.getTotalBytes() * 100}`);
+    //     }
+    //   }
+    // });
+    item.once('done', (event, state) => {
+      if (state === 'completed') {
+        var unzip = new adm_zip(filePath);
+        unzip.extractAllTo(installPath, /*overwrite*/true,);
+        fs.unlink(filePath,(e)=>{
+            console.log('eee',e)
+        })
+      }
+    })
+  })
 }
-var checkDirectory=function(src,dst,callback){
-    fs.access(dst, fs.constants.F_OK, (err) => {
-        if(err){
-            fs.mkdirSync(dst);
-            callback(src,dst);
-        }else{
-            callback(src,dst);
-        }
-      });
-};
+/**拷贝过程 */
+function _copyDir(src, dist, callback) {
+    fs.access(dist, function(err){
+      if(err){
+        // 目录不存在时创建目录
+        fs.mkdirSync(dist);
+      }
+      _copy(null, src, dist);
+    });
+  
+    function _copy(err, src, dist) {
+      if(err){
+        callback(err);
+      } else {
+        fs.readdir(src, function(err, paths) {
+          if(err){
+            callback(err)
+          } else {
+            paths.forEach(function(path) {
+              var _src = src + '/' +path;
+              var _dist = dist + '/' +path;
+              fs.stat(_src, function(err, stat) {
+                if(err){
+                  callback(err);
+                } else {
+                  // 判断是文件还是目录
+                  if(stat.isFile()) {
+                    fs.writeFileSync(_dist, fs.readFileSync(_src));
+                  } else if(stat.isDirectory()) {
+                    // 当是目录是，递归复制
+                    _copyDir(_src, _dist, callback)
+                  }
+                }
+              })
+            })
+          }
+        })
+      }
+    }
+  }
+
 
  

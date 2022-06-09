@@ -35,7 +35,7 @@
         }
     },
     "dependencies": {
-        "fs-extra": "^10.1.0"
+        "adm-zip": "^0.5.9"
     },
     "devDependencies": {
         "electron": "^19.0.3",
