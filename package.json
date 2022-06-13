@@ -1,6 +1,6 @@
 {
     "name": "electronjs",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "description": "my awesome electron-app",
     "main": "main.js",
     "scripts": {
