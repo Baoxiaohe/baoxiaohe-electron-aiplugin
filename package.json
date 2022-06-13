@@ -7,10 +7,9 @@
         "start": "electron .",
         "test": "echo \"Error: no test specified\" && exit 1",
         "build": "electron-builder",
-        "electron:build-win": "electron-builder",
-        "electron:build": "electron-builder",
         "publish:win:setup": "electron-builder -w=nsis --x64 -p always",
-        "publish:mac:dmg": "electron-builder -m=dmg -p always"
+        "publish:mac:dmg": "electron-builder -m=dmg -p always", 
+        "publish:linux:deb": "electron-builder -l=deb --x64 -p always"
     },
     "electronDownload": {
         "mirror": "https://npm.taobao.org/mirrors/electron/"
@@ -26,7 +25,7 @@
         },
         "publish": [
             {
-              "provider": "github"
+                "provider": "github"
             }
         ],
         "mac": {
@@ -34,7 +33,9 @@
             "target": [
                 "dmg"
             ],
-            "extraResources":["zw/index.html"],
+            "extraResources": [
+                "zw/index.html"
+            ],
             "hardenedRuntime": false
         },
         "nsis": {
@@ -44,7 +45,8 @@
         }
     },
     "dependencies": {
-        "adm-zip": "^0.5.9"
+        "adm-zip": "^0.5.9",
+        "electron-updater": "^5.0.1"
     },
     "devDependencies": {
         "electron": "^19.0.3",
