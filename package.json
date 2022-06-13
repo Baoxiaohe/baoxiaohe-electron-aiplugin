@@ -8,7 +8,9 @@
         "test": "echo \"Error: no test specified\" && exit 1",
         "build": "electron-builder",
         "electron:build-win": "electron-builder",
-        "electron:build": "electron-builder"
+        "electron:build": "electron-builder",
+        "publish:win:setup": "electron-builder -w=nsis --x64 -p always",
+        "publish:mac:dmg": "electron-builder -m=dmg -p always"
     },
     "electronDownload": {
         "mirror": "https://npm.taobao.org/mirrors/electron/"
@@ -22,6 +24,11 @@
                 "nsis"
             ]
         },
+        "publish": [
+            {
+              "provider": "github"
+            }
+        ],
         "mac": {
             "icon": "build/favicon.ico",
             "target": [
