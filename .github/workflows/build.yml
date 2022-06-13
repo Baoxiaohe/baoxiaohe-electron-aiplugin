@@ -79,12 +79,6 @@ jobs:
           files: "dist/**"
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-          - name: Prepare for app notarization
-        if: startsWith(matrix.os, 'macos')
-        # Import Apple API key for app notarization on macOS
-        run: |
-          mkdir -p ~/private_keys/
-          echo '${{ secrets.MACOS_API_KEY }}' > ~/private_keys/AuthKey_${{ secrets.MACOS_API_KEY_ID }}.p8
       - name: Build/release Electron app
         uses: samuelmeuli/action-electron-builder@v1
         env:
