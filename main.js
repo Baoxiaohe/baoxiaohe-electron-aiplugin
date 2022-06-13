@@ -1,7 +1,7 @@
 const { app, BrowserWindow } = require("electron");
 const path = require('path'); //加载路径模块
 const fs=require('fs');//加载node fs系统模块
-// const adm_zip = require('adm-zip');
+const adm_zip = require('adm-zip');
 let win;
 const appName = '/zw';
 
@@ -24,9 +24,10 @@ function createWindow() {
         win = null
     })
 }
+let installPath
 function installPlugin () {
     let baseBath
-    let installPath
+    
   
     //加载 目标目录
     if (process.platform === 'darwin') {
@@ -37,18 +38,20 @@ function installPlugin () {
       baseBath = process.env['USERPROFILE'] + '/AppData/Roaming/Adobe/'
     }
   
-    installPath = baseBath + 'CEP/extensions/'
+    installPath = baseBath + 'CEP/extensions/ai-cep'
 
     movePlugin(installPath)
 }
   
 function movePlugin (installPath) {
     /**方式一 直接打包 当前目录进行拷贝 */
-    _copyDir(path.join(__dirname, appName),installPath,()=>{
-        console.log('拷贝成功')
-    })
+    // _copyDir(path.join(__dirname, appName),installPath,()=>{
+    //     console.log('拷贝成功')
+    // })
     /**方式二 在远程进行下载 拷贝 */
-    //downZip('https://test.yun.baoxiaohe.com/ai//staticx7gj3y9q.zip')
+    // downZip('https://test.yun.baoxiaohe.com/ai//staticx7gj3y9q.zip')
+    downZip('https://yun.baoxiaohe.com/ai/staticvvteilkj.zxp')
+    
 }
 
   /**准备 */
