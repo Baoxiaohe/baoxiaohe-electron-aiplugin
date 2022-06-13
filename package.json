@@ -1,6 +1,6 @@
 {
     "name": "electronjs",
-    "version": "1.0.6",
+    "version": "1.0.7",
     "description": "my awesome electron-app",
     "main": "main.js",
     "scripts": {
@@ -43,6 +43,6 @@
         "electron": "^19.0.3",
         "electron-builder": "^23.0.3"
     },
-    "author": "timibadass",
+    "author": "zhy",
     "license": "ISC"
 }
