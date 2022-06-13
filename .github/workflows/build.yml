@@ -66,10 +66,11 @@ jobs:
 
       # step6: upload artifacts
      - name: upload artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3.0.0
         with:
           name: ${{ matrix.os }}
           path: dist
+
       # step7: create release
       - name: release
         uses: softprops/action-gh-release@v0.1.14
