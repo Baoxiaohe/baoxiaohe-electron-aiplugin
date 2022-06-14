@@ -1,6 +1,6 @@
 {
     "name": "electronjs",
-    "version": "1.0.15",
+    "version": "1.0.16",
     "description": "Baoxiaohe AI Plugin",
     "main": "main.js",
     "private": true,
@@ -20,6 +20,7 @@
     "build": {
         "appId": "com.baoxiaohe.aiplugin",
         "productName": "ai-plugin",
+        "afterSign": "electron-builder-notarize",
         "win": {
             "icon": "build/favicon.ico",
             "target": [
@@ -37,6 +38,7 @@
                 "dmg"
             ],
             "extraResources":["zw/index.html"],
+            "artifactName": "${name}_${version}.${ext}",
             "hardenedRuntime": true,
             "entitlements": "build/entitlements.mac.plist",
             "entitlementsInherit": "build/entitlements.mac.plist",
@@ -54,7 +56,8 @@
     },
     "devDependencies": {
         "electron": "^19.0.3",
-        "electron-builder": "^23.0.3"
+        "electron-builder": "^23.0.3",
+        "electron-builder-notarize": "^1.2.0"
     },
     "author": "zhy",
     "license": "ISC",
