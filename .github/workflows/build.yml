@@ -41,7 +41,7 @@ jobs:
           mac_certs_password: ${{ secrets.MACOS_CERTIFICATE_PASSWORD}}
           windows_certs: ${{ secrets.WINDOWS_CERTIFICATE_APPLICATION}}
           windows_certs_password: ${{ secrets.WINDOWS_CERTIFICATE_PASSWORD}}
-          github_token: ${{ secrets.GITHUB_TOKEN}}
+          github_token: ${{ secrets.github_token}}
 
           release: ${{ startsWith(github.ref, 'refs/tags/v') }}
           max_attempts: 5

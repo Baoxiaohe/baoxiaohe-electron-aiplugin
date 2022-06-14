@@ -1,6 +1,6 @@
 {
     "name": "electronjs",
-    "version": "1.0.13",
+    "version": "1.0.14",
     "description": "Baoxiaohe AI Plugin",
     "main": "main.js",
     "private": true,
@@ -37,7 +37,10 @@
                 "dmg"
             ],
             "extraResources":["zw/index.html"],
-            "hardenedRuntime": true
+            "hardenedRuntime": true,
+            "entitlements": "build/entitlements.mac.plist",
+            "entitlementsInherit": "build/entitlements.mac.plist",
+            "provisioningProfile": "build/baoxiaohe-aiplugin.provisionprofile"
         },
         "nsis": {
             "oneClick": false,
