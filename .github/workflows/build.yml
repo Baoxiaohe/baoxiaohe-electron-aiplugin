@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, macos-latest, ubuntu-latest]
+        os: [windows-latest, macos-latest]
 
     steps:
       - name: Check out git repository
@@ -32,18 +32,32 @@ jobs:
         run: |
           mkdir -p ~/private_keys/
           echo '${{ secrets.MACOS_API_KEY }}' > ~/private_keys/AuthKey_${{ secrets.MACOS_API_KEY_ID }}.p8
-
-      - name: Build/release Electron app
-        uses: samuelmeuli/action-electron-builder@v1
+          
+      - name: Build Electron App
+        run: npm run dist
         env:
-          API_KEY_ID: ${{ secrets.MACOS_API_KEY_ID }}
-          API_KEY_ISSUER_ID: ${{ secrets.MACOS_API_KEY_ISSUER_ID }}
-        with:
-          mac_certs: ${{ secrets.MACOS_CERTIFICATE_APPLICATION}}
-          mac_certs_password: ${{ secrets.MACOS_CERTIFICATE_PASSWORD}}
-          windows_certs: ${{ secrets.WINDOWS_CERTIFICATE_APPLICATION}}
-          windows_certs_password: ${{ secrets.WINDOWS_CERTIFICATE_PASSWORD}}
-          github_token: ${{ secrets.github_token }}
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
 
-          release: ${{ startsWith(github.ref, 'refs/tags/v') }}
-          max_attempts: 5
+      - name: Cleanup Artifacts for Windows
+        if: matrix.os == 'windows-latest'
+        run: |
+          npx rimraf "dist/!(*.exe)"
+          
+      - name: Cleanup Artifacts for MacOS
+        if: matrix.os == 'macos-latest'
+        run: |
+          npx rimraf "dist/!(*.dmg)"
+      
+      - name: upload artifacts
+        uses: actions/upload-artifact@v3.0.0
+        with:
+          name: ${{ matrix.os }}
+          path: dist
+
+      - name: release
+        uses: softprops/action-gh-release@v0.1.14
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: "dist/**"
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}

@@ -44,13 +44,7 @@
             "perMachine": true,
             "allowToChangeInstallationDirectory": true
         },
-        "asar": false,
-        "linux": {
-            "target": [
-                "deb"
-            ],
-            "icon": "build/favicon.ico"
-        }
+        "asar": false
     },
     "dependencies": {
         "adm-zip": "^0.5.9"
