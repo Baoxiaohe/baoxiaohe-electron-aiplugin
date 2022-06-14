@@ -1,6 +1,6 @@
 {
     "name": "electronjs",
-    "version": "1.0.9",
+    "version": "1.0.10",
     "description": "my awesome electron-app",
     "main": "main.js",
     "scripts": {
@@ -9,6 +9,7 @@
         "build": "electron-builder",
         "electron:build-win": "electron-builder",
         "electron:build": "electron-builder",
+        "dist": "electron-builder -p always",
         "publish:win:setup": "electron-builder -w=nsis --x64 -p always",
         "publish:mac:dmg": "electron-builder -m=dmg -p always"
     },
@@ -41,6 +42,14 @@
             "oneClick": false,
             "perMachine": true,
             "allowToChangeInstallationDirectory": true
+        },
+        "asar": false,
+        "linux": {
+        "target": [
+            "deb",
+            "AppImage"
+        ],
+        "icon": "assest/icon.ico"
         }
     },
     "dependencies": {
@@ -51,5 +60,17 @@
         "electron-builder": "^23.0.3"
     },
     "author": "zhy",
-    "license": "ISC"
+    "license": "ISC",
+    "browserslist": {
+        "production": [
+          ">0.2%",
+          "not dead",
+          "not op_mini all"
+        ],
+        "development": [
+          "last 1 chrome version",
+          "last 1 firefox version",
+          "last 1 safari version"
+        ]
+      }
 }
