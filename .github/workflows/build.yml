@@ -36,7 +36,12 @@ jobs:
       - name: npm install
         run: |
           npm install
-
+      - name: Prepare for app notarization
+        if: startsWith(matrix.os, 'macos')
+        # Import Apple API key for app notarization on macOS
+        run: |
+          mkdir -p ~/private_keys/
+          echo '${{ secrets.MACOS_API_KEY }}' > ~/private_keys/AuthKey_${{ secrets.MACOS_API_KEY_ID }}.p8
       # step4: build app for mac/win
       - name: build windows app
         if: matrix.os == 'windows-2019'
