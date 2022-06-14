@@ -1,7 +1,7 @@
 {
     "name": "electronjs",
-    "version": "1.0.11",
-    "description": "my awesome electron-app",
+    "version": "1.0.13",
+    "description": "Baoxiaohe AI Plugin",
     "main": "main.js",
     "private": true,
     "scripts": {
@@ -18,8 +18,8 @@
         "mirror": "https://npm.taobao.org/mirrors/electron/"
     },
     "build": {
-        "appId": "com.baoxiaohe.aiPlugins",
-        "productName": "ai-plugins",
+        "appId": "com.baoxiaohe.aiplugin",
+        "productName": "ai-plugin",
         "win": {
             "icon": "build/favicon.ico",
             "target": [
@@ -37,7 +37,7 @@
                 "dmg"
             ],
             "extraResources":["zw/index.html"],
-            "hardenedRuntime": false
+            "hardenedRuntime": true
         },
         "nsis": {
             "oneClick": false,

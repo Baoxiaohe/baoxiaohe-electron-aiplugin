@@ -1,63 +1,47 @@
-name: Build
+name: Build/release
 
 on:
   push:
-    branches:
-      - master
+    # Pattern matched against refs/tags
+    tags:
+      - "*"
 
 jobs:
   release:
-    name: build and release electron app
     runs-on: ${{ matrix.os }}
 
     strategy:
-      fail-fast: false
       matrix:
-        os: [windows-latest, macos-latest]
+        # os: [macos-latest, windows-latest]
+        os: [macos-latest]
 
     steps:
-      - name: Check out git repository
-        uses: actions/checkout@v3.0.0
+      - name: Check out Git repository
+        uses: actions/checkout@v1
 
-      - name: Install Node.js
-        uses: actions/setup-node@v3.0.0
+      - name: Install Node.js, NPM and Yarn
+        uses: actions/setup-node@v1
         with:
-          node-version: "16"
+          node-version: 14
 
-      - name: Install Dependencies
-        run: npm install
       - name: Prepare for app notarization
         if: startsWith(matrix.os, 'macos')
         # Import Apple API key for app notarization on macOS
         run: |
           mkdir -p ~/private_keys/
           echo '${{ secrets.MACOS_API_KEY }}' > ~/private_keys/AuthKey_${{ secrets.MACOS_API_KEY_ID }}.p8
-          
-      - name: Build Electron App
-        run: npm run dist
-        env:
-          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
 
-      - name: Cleanup Artifacts for Windows
-        if: matrix.os == 'windows-latest'
-        run: |
-          npx rimraf "dist/!(*.exe)"
-          
-      - name: Cleanup Artifacts for MacOS
-        if: matrix.os == 'macos-latest'
-        run: |
-          npx rimraf "dist/!(*.dmg)"
-      
-      - name: upload artifacts
-        uses: actions/upload-artifact@v3.0.0
-        with:
-          name: ${{ matrix.os }}
-          path: dist
-
-      - name: release
-        uses: softprops/action-gh-release@v0.1.14
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          files: "dist/**"
+      - name: Build/release Electron app
+        uses: samuelmeuli/action-electron-builder@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          API_KEY_ID: ${{ secrets.MACOS_API_KEY_ID }}
+          API_KEY_ISSUER_ID: ${{ secrets.MACOS_API_KEY_ISSUER_ID }}
+        with:
+          mac_certs: ${{ secrets.MACOS_CERTIFICATE_APPLICATION}}
+          mac_certs_password: ${{ secrets.MACOS_CERTIFICATE_PASSWORD}}
+          windows_certs: ${{ secrets.WINDOWS_CERTIFICATE_APPLICATION}}
+          windows_certs_password: ${{ secrets.WINDOWS_CERTIFICATE_PASSWORD}}
+          github_token: ${{ secrets.GITHUB_TOKEN}}
+
+          release: ${{ startsWith(github.ref, 'refs/tags/v') }}
+          max_attempts: 5
