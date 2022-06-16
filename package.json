@@ -1,6 +1,6 @@
 {
     "name": "electronjs",
-    "version": "1.0.16",
+    "version": "1.0.26",
     "description": "Baoxiaohe AI Plugin",
     "main": "main.js",
     "private": true,
