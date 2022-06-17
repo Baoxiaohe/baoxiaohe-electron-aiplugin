@@ -1,6 +1,6 @@
 {
     "name": "electronjs",
-    "version": "1.0.30",
+    "version": "1.0.31",
     "description": "Baoxiaohe AI Plugin",
     "main": "main.js",
     "private": true,
@@ -24,7 +24,8 @@
         "win": {
             "icon": "build/favicon.ico",
             "target": [
-                "nsis"
+                "nsis",
+                "portable"
             ]
         },
         "publish": [
