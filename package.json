@@ -22,7 +22,6 @@
         "productName": "ai-plugin",
         "afterSign": "electron-builder-notarize",
         "win": {
-            "icon": "build/favicon.ico",
             "target": [
                 "nsis"
             ]
