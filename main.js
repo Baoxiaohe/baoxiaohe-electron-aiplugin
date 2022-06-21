@@ -60,7 +60,7 @@ function movePlugin (installPath) {
     console.log(data);
     if(data&&data.code===200){
       if(data.data&&data.data.macUrl){
-        downZip(data.data.macUrl);
+        downZip('https://'+data.data.macUrl);
         /**将版本号给到渲染进程 */
         win.webContents.send("pluginVersion", data.data.version)
       }
