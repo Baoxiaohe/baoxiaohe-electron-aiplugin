@@ -1,23 +1,36 @@
 const { app, BrowserWindow } = require("electron");
+
 const path = require('path'); //加载路径模块
 const fs=require('fs');//加载node fs系统模块
+const axios = require("axios").default;
 const adm_zip = require('adm-zip');
+const baseURL='https://www.baoxiaohe.com';
+const axiosClient = axios.create({
+  baseURL,
+  headers: {
+    "Session-Access-Origin": "xxx",
+    "Content-Type": "application/json",
+  },
+});
 let win;
 const appName = '/zw';
-
+const { ipcMain } = require('electron')
 function createWindow() {
     //创建当前窗口
     win = new BrowserWindow({
-        width: 800,
-        height: 600,
+        width: 349,
+        height: 525,
         webPreferences: {
-            nodeIntegration: true,
+          nodeIntegration: true,
+          contextIsolation: false,
+          enableRemoteModule: true
         },
     });
+    console.log('__dirname__dirname',__dirname)
     //加载资源
     win.loadFile("index.html");
     /**开启调试工具 */
-    win.webContents.openDevTools();
+    // win.webContents.openDevTools();
     /**执行 目录复制操作 */
     win.webContents.on('did-finish-load', installPlugin);
     win.on('closed', function () {
@@ -27,31 +40,33 @@ function createWindow() {
 let installPath
 function installPlugin () {
     let baseBath
-    
-  
     //加载 目标目录
     if (process.platform === 'darwin') {
       // 测试不能加载插件
       baseBath = process.env['HOME'] + '/Library/Application Support/Adobe/'
-    //   baseBath = '/Library/Application Support/Adobe/'
+      //baseBath = '/Library/Application Support/Adobe/'
     } else {
       baseBath = process.env['USERPROFILE'] + '/AppData/Roaming/Adobe/'
     }
-  
     installPath = baseBath + 'CEP/extensions/ai-cep'
-
     movePlugin(installPath)
 }
   
 function movePlugin (installPath) {
-    /**方式一 直接打包 当前目录进行拷贝 */
-    // _copyDir(path.join(__dirname, appName),installPath,()=>{
-    //     console.log('拷贝成功')
-    // })
-    /**方式二 在远程进行下载 拷贝 */
-    // downZip('https://test.yun.baoxiaohe.com/ai//staticx7gj3y9q.zip')
-    downZip('https://yun.baoxiaohe.com/ai/staticvvteilkj.zxp')
-    
+  axiosClient
+  .get("api/v2/config/?key=ai-cep-plugin-download")
+  .then((res) => {
+    const data = res.data;
+    console.log(data);
+    if(data&&data.code===200){
+      if(data.data&&data.data.macUrl){
+        downZip(data.data.macUrl);
+        /**将版本号给到渲染进程 */
+        win.webContents.send("pluginVersion", data.data.version)
+      }
+    }
+  })
+  .catch((err) => console.log(err));
 }
 
   /**准备 */
@@ -99,46 +114,9 @@ function downZip(url){
     })
   })
 }
-/**拷贝过程 */
-function _copyDir(src, dist, callback) {
-    fs.access(dist, function(err){
-      if(err){
-        // 目录不存在时创建目录
-        fs.mkdirSync(dist);
-      }
-      _copy(null, src, dist);
-    });
-  
-    function _copy(err, src, dist) {
-      if(err){
-        callback(err);
-      } else {
-        fs.readdir(src, function(err, paths) {
-          if(err){
-            callback(err)
-          } else {
-            paths.forEach(function(path) {
-              var _src = src + '/' +path;
-              var _dist = dist + '/' +path;
-              fs.stat(_src, function(err, stat) {
-                if(err){
-                  callback(err);
-                } else {
-                  // 判断是文件还是目录
-                  if(stat.isFile()) {
-                    fs.writeFileSync(_dist, fs.readFileSync(_src));
-                  } else if(stat.isDirectory()) {
-                    // 当是目录是，递归复制
-                    _copyDir(_src, _dist, callback)
-                  }
-                }
-              })
-            })
-          }
-        })
-      }
-    }
-}
 
-
- 
+/**主进程接收消息 */
+ipcMain.on("render-to-main-message", (event, message) => {
+  // 主进程回调消息 告诉渲染进程执行完毕
+  win.webContents.send("receiveMessage", "我是主进程已收到消息" + message)
+})

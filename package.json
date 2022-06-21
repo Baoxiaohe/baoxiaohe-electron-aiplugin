@@ -1,6 +1,6 @@
 {
     "name": "electronjs",
-    "version": "1.0.13",
+    "version": "1.0.17",
     "description": "Baoxiaohe AI Plugin",
     "main": "main.js",
     "private": true,
@@ -20,6 +20,7 @@
     "build": {
         "appId": "com.baoxiaohe.aiplugin",
         "productName": "ai-plugin",
+        "afterSign": "electron-builder-notarize",
         "win": {
             "icon": "build/favicon.ico",
             "target": [
@@ -37,7 +38,11 @@
                 "dmg"
             ],
             "extraResources":["zw/index.html"],
-            "hardenedRuntime": true
+            "artifactName": "${name}_${version}.${ext}",
+            "hardenedRuntime": true,
+            "entitlements": "build/entitlements.mac.plist",
+            "entitlementsInherit": "build/entitlements.mac.plist",
+            "provisioningProfile": "build/baoxiaohe-aiplugin.provisionprofile"
         },
         "nsis": {
             "oneClick": false,
@@ -47,24 +52,27 @@
         "asar": false
     },
     "dependencies": {
-        "adm-zip": "^0.5.9"
+        "adm-zip": "^0.5.9",
+        "axios": "^0.27.2",
+        "electron-updater": "^5.0.1"
     },
     "devDependencies": {
         "electron": "^19.0.3",
-        "electron-builder": "^23.0.3"
+        "electron-builder": "^23.0.3",
+        "electron-builder-notarize": "^1.2.0"
     },
     "author": "zhy",
     "license": "ISC",
     "browserslist": {
         "production": [
-          ">0.2%",
-          "not dead",
-          "not op_mini all"
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
         ],
         "development": [
-          "last 1 chrome version",
-          "last 1 firefox version",
-          "last 1 safari version"
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
         ]
-      }
+    }
 }

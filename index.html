@@ -1,19 +1,25 @@
+
 <!DOCTYPE html>
 <html>
 
 <head>
     <meta charset="UTF-8">
-    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
-    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
-    <title>Hello World!</title>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self';font-src 'self'; img-src 'self' data: https:; style-src 'self' ; script-src 'self'">
+    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; connect-src 'self';font-src 'self'; img-src 'self' data: https:; style-src 'self' ; script-src 'self'">
+    <meta name="referrer" content="no-referrer" />
+    <link rel="stylesheet" href="assets/css/reset.css">
+    <link rel="stylesheet" href="assets/css/index.css">
+    <title>包小盒插件助手</title>
 </head>
 
 <body>
-    <h1>Hello World!</h1>
-    <p>My first desktop application.</p>
-
-    <!-- You can also require other files to run in this process -->
+    <div class="containt">
+        <img class="logo" src="https://cdn.baoxiaohe.com/3f1ab537-922f-79c7-eega-d5e0e0396942.png" />
+        <div class="title">包小盒</div>
+        <div class="desc">包装设计AI助手</div>
+        <div id="version" class="version">1.0.0</div>
+        <div id="openPlugin" class="btn">打开插件</div>
+    </div>
 </body>
-
+<script src="./assets/js/render.js"></script>
 </html>
