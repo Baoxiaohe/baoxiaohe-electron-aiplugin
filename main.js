@@ -90,7 +90,6 @@ function downZip(url){
     win.webContents.session.once('will-download', (event, item, webContents) => {
     //设置保存路径
     const filePath = path.join(installPath, `bxh-ai-plugin.zip`);
-    win.webContents.send("step1", 'step1')
     item.setSavePath(filePath);
     // item.on('updated', (event, state) => {
     //   if (state === 'interrupted') {
@@ -108,9 +107,9 @@ function downZip(url){
       if (state === 'completed') {
         var unzip = new adm_zip(filePath);
         unzip.extractAllTo(installPath, /*overwrite*/true,);
-        win.webContents.send("step2", 'step2')
+       
         fs.unlink(filePath,(e)=>{
-          win.webContents.send("step3", 'step3')
+          console.log(e)
         })
       }
     })
