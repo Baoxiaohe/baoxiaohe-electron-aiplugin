@@ -1,6 +1,6 @@
 {
-    "name": "electronjs",
-    "version": "1.0.35",
+    "name": "bxh-ai-plugin",
+    "version": "1.0.21",
     "description": "Baoxiaohe AI Plugin",
     "main": "main.js",
     "private": true,
@@ -19,20 +19,22 @@
     },
     "build": {
         "appId": "com.baoxiaohe.aiplugin",
-        "productName": "ai-plugin",
+        "productName": "包小盒包装设计AI助手",
         "afterSign": "electron-builder-notarize",
         "win": {
+            "icon": "build/logo.png",
             "target": [
                 "nsis"
             ]
         },
+       
         "publish": [
             {
               "provider": "github"
             }
         ],
         "mac": {
-            "icon": "build/favicon.ico",
+            "icon": "build/logo.png",
             "target": [
                 "dmg"
             ],
