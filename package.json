@@ -1,6 +1,6 @@
 {
     "name": "bxh-ai-plugin",
-    "version": "1.0.21",
+    "version": "1.0.22",
     "description": "Baoxiaohe AI Plugin",
     "main": "main.js",
     "private": true,
@@ -19,7 +19,7 @@
     },
     "build": {
         "appId": "com.baoxiaohe.aiplugin",
-        "productName": "包小盒包装设计AI助手",
+        "productName": "包小盒设计助手Ai插件",
         "afterSign": "electron-builder-notarize",
         "win": {
             "icon": "build/logo.png",
@@ -27,7 +27,6 @@
                 "nsis"
             ]
         },
-       
         "publish": [
             {
               "provider": "github"
@@ -39,7 +38,7 @@
                 "dmg"
             ],
             "extraResources":["zw/index.html"],
-            "artifactName": "${name}_${version}.${ext}",
+            "artifactName": "${productName}_${version}.${ext}",
             "hardenedRuntime": true,
             "entitlements": "build/entitlements.mac.plist",
             "entitlementsInherit": "build/entitlements.mac.plist",
