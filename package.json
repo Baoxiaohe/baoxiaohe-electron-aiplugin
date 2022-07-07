@@ -1,6 +1,6 @@
 {
     "name": "bxh-ai-plugin",
-    "version": "1.0.24",
+    "version": "1.0.25",
     "description": "Baoxiaohe AI Plugin",
     "main": "main.js",
     "private": true,
