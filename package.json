@@ -1,6 +1,7 @@
 {
-    "name": "bxh-ai-plugin",
+    "name": "bxh-design-assistant-ai-plugin",
     "version": "1.0.41",
+    "productName":"包小盒设计助手Ai插件",
     "description": "Baoxiaohe AI Plugin",
     "main": "main.js",
     "private": true,
@@ -19,7 +20,7 @@
     },
     "build": {
         "appId": "com.baoxiaohe.aiplugin",
-        "productName": "包小盒设计助手AI插件",
+        "productName": "包小盒设计助手Ai插件",
         "afterSign": "electron-builder-notarize",
         "win": {
             "icon": "build/logo.png",
