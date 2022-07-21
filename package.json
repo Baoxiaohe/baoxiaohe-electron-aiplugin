@@ -1,6 +1,6 @@
 {
     "name": "bxh-design-assistant-ai-plugin",
-    "version": "1.0.43",
+    "version": "1.0.44",
     "productName":"包小盒设计助手Ai插件",
     "description": "Baoxiaohe Ai Plugin",
     "main": "main.js",
